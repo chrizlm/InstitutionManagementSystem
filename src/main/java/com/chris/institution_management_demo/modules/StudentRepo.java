@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface StudentRepo extends JpaRepository<Student,Integer> {
     List<Student> findByCourse(Course course);
-    List<Student> findByInstitution(Institution institution, Sort sort, Pageable pageable);
+    List<Student> findByInstitution(Institution institution, Pageable pageable);
     List<Student> findByInstitution(Institution institution);
 
     Optional<Student> findByStudentName(String name);

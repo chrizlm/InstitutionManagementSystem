@@ -38,7 +38,7 @@ public class StudentService {
     public List<Student> getAllStudentsByInstitution(String instName){
         log.info("getting list of all students");
         Institution institution = inst_repo.findInstitutionByInstName(instName).orElseThrow();
-        return repo.findByInstitution(institution,Sort.by(Sort.Direction.ASC,"course"), Pageable.ofSize(10));
+        return repo.findByInstitution(institution, (Pageable) Pageable.ofSize(10).getSort().getOrderFor("course"));
     }
 
 

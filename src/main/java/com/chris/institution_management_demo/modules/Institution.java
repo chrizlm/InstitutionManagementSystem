@@ -28,7 +28,7 @@ public class Institution implements Serializable {
     @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Course> courses;
 
-    @OneToMany(mappedBy = "institutionstu", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Student> students;
 
     public Institution(String instName) {
