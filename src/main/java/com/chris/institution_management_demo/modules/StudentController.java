@@ -23,6 +23,12 @@ public class StudentController {
         return new ResponseEntity<>(service.saveStudent(student), HttpStatus.OK);
     }
 
+    @PutMapping("/assign/course")
+    public ResponseEntity<String> assignStudentCourse(@RequestParam String studentName, @RequestParam String courseName){
+        log.info("request to assign student a course");
+        return new ResponseEntity<>(service.assignStudent(studentName, courseName), HttpStatus.OK);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<Student>> getAllStudents(){
         log.info("request to get all students");

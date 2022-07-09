@@ -21,6 +21,8 @@ import java.util.List;
 public class CourseService {
     @Autowired
     CourseRepo repo;
+    @Autowired
+    InstitutionRepo institutionRepo;
 
     public String saveCourse(Course course){
 
@@ -38,6 +40,15 @@ public class CourseService {
         }
 
         //check if name exists
+    }
+
+    public String addCourseToInstitution(String courseName, String institutionName){
+        log.info("adding course to an institution");
+        Course course = repo.findCourseByCourseName(courseName).orElseThrow();
+        Institution institution = institutionRepo.findInstitutionByInstName(institutionName).orElseThrow();
+
+        institution.getCourses().add(course);
+        return "course added to institution";
     }
 
     public List<Course> getAllCourses(){

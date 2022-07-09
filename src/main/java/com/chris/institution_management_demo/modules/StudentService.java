@@ -24,6 +24,14 @@ public class StudentService {
         return "student record saved";
     }
 
+    public String assignStudent(String studentName, String courseName){
+        log.info("assigning student");
+        Student student = repo.findByStudentName(studentName).orElseThrow();
+        Course course = courseRepo.findCourseByCourseName(courseName).orElseThrow();
+        course.getStudents().add(student);
+        return "student assigned a course";
+    }
+
     public Student getStudent(int id){
         log.info("getting student with id: {}", id);
         return repo.findById(id).orElseThrow();

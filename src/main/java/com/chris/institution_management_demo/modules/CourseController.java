@@ -31,6 +31,12 @@ public class CourseController {
         return new ResponseEntity<>(service.saveCourse(course), HttpStatus.OK);
     }
 
+    @PutMapping("/assign/institution")
+    public ResponseEntity<String> assignCourseToInstitution(@RequestParam String courseName, @RequestParam String instName){
+        log.info("request to asiign course to an institution");
+        return new ResponseEntity<>(service.addCourseToInstitution(courseName, instName), HttpStatus.OK);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<Course>> getAllCourses(){
         log.info("request to get all records");
