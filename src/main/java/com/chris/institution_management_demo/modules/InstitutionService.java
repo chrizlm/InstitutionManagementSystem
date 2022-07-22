@@ -13,13 +13,14 @@ public class InstitutionService {
     @Autowired
     InstitutionRepo repo;
 
+    @Autowired
+    CourseRepo courseRepo;
+
     public String saveInst(Institution institution){
-        log.info("record of {} saved!", institution.getInstName());
-        repo.save(institution);
 
 
-        Optional<Institution> inst = repo.findInstitutionByInstName(institution.getInstName());
-        String db_name = inst.get().getInstName().toUpperCase();
+        Institution inst = repo.findInstitutionByInstName(institution.getInstName()).orElse(new Institution("empty"));
+        String db_name = inst.getInstName().toUpperCase();
         String search_name = institution.getInstName().toUpperCase();
 
         if(db_name.equals(search_name) && db_name != null){
@@ -28,10 +29,22 @@ public class InstitutionService {
         }else{
             repo.save(institution);
             log.info("saving record ....");
+            log.info("record of {} saved!", institution.getInstName());
+
             return "Institution saved";
         }
 
 
+    }
+
+
+    public String addCourseToInstitution(String courseName, String instName){
+        log.info("adding course to an institution");
+        Course course = courseRepo.findCourseByCourseName(courseName).orElseThrow();
+        Institution institution = repo.findInstitutionByInstName(instName).orElseThrow();
+
+        institution.getCourses().add(course);
+        return "course added to institution";
     }
 
     public List<Institution> getAllInst(){
@@ -52,7 +65,7 @@ public class InstitutionService {
         Set<Course> courseSet =  institution.getCourses();
 
         log.info("sorting the list");
-        ArrayList<Course> courseList = new ArrayList<>(courseSet);
+        List<Course> courseList = new ArrayList<>(courseSet);
         return (List<Course>) courseList.stream().sorted();
     }
 
@@ -73,25 +86,27 @@ public class InstitutionService {
 
     public Optional<Institution> getInst(String name){
         log.info("getting record with name: {}", name);
-        return repo.findInstitutionByInstName(name);
+        return repo.findByInstName(name);
     }
 
 
     public String editInstName(String newName, String dbName){
 
         log.info("getting record with name: {}", dbName);
-        Institution inst1 = repo.findInstitutionByInstName(dbName).orElseThrow();
+        Institution inst1 = repo.findByInstName(dbName).orElse(new Institution("empty"));
 
         log.info("getting record with name: {}", newName);
-        Institution inst2 = repo.findInstitutionByInstName(newName).orElse(new Institution("empty"));
+        Institution inst2 = repo.findByInstName(newName).orElse(new Institution("empty"));
         String name_inst_2 = inst2.getInstName().toUpperCase();
+        String name_inst_1 = inst1.getInstName().toUpperCase();
 
-        if(name_inst_2.equals(newName.toUpperCase()) && name_inst_2 != null){
+        if(name_inst_2.equals(name_inst_1) && name_inst_2 != null){
             log.info("this name: {}, already exists", newName);
             return "Name already exists";
         }else{
             log.info("changing the name: {} to the new name: {} ", dbName, newName);
             inst1.setInstName(newName);
+            repo.save(inst1);
             return "Record name updated";
         }
 

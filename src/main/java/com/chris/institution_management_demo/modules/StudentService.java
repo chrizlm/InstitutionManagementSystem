@@ -24,11 +24,14 @@ public class StudentService {
         return "student record saved";
     }
 
-    public String assignStudent(String studentName, String courseName){
+    public String assignStudent(String studentName, String courseName, String instName){
         log.info("assigning student");
         Student student = repo.findByStudentName(studentName).orElseThrow();
         Course course = courseRepo.findCourseByCourseName(courseName).orElseThrow();
-        course.getStudents().add(student);
+        Institution institution = inst_repo.findByInstName(instName).orElseThrow();
+        student.setCourse(course);
+        student.setInstitution(institution);
+        repo.save(student);
         return "student assigned a course";
     }
 
@@ -64,14 +67,17 @@ public class StudentService {
         log.info("changing name of student");
         Student student = repo.findByStudentName(dbName).orElseThrow();
         student.setStudentName(newName);
+        repo.save(student);
         return "Name changed";
     }
 
-    public String editCourse(String courseName, String dbName){
+    public String editCourse(String courseName, int studentId){
         log.info("changing course of student");
-        Student student = repo.findByStudentName(dbName).orElseThrow();
-        student.getCourse().setCourseName(courseName);
-        return "Name changed";
+        Student student = repo.findById(studentId).orElseThrow();
+        Course course = courseRepo.findByCourseName(courseName).orElseThrow();
+        student.setCourse(course);
+        repo.save(student);
+        return "Course changed";
     }
 
     public String deleteStudent(int id){
@@ -88,8 +94,8 @@ public class StudentService {
         Course course = courseRepo.findCourseByCourseName(courseName).orElseThrow();
         if(institution != null && course != null){
             log.info("transfering student to: {} to do {}", instName, courseName );
-            student.getInstitution().setInstName(instName);
-            student.getCourse().setCourseName(courseName);
+            student.setCourse(course);
+            student.setInstitution(institution);
             repo.save(student);
             return "student transfered";
         } else {

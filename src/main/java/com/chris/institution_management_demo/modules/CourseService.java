@@ -6,6 +6,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /*
  * Course service supports the controller with the following
@@ -44,10 +46,11 @@ public class CourseService {
 
     public String addCourseToInstitution(String courseName, String institutionName){
         log.info("adding course to an institution");
-        Course course = repo.findCourseByCourseName(courseName).orElseThrow();
-        Institution institution = institutionRepo.findInstitutionByInstName(institutionName).orElseThrow();
+        Course course = repo.findByCourseName(courseName).orElse(new Course("empty"));
+        Institution institution = institutionRepo.findByInstName(institutionName).orElse(new Institution("empty"));
+        course.setInstitution(institution);
+        repo.save(course);
 
-        institution.getCourses().add(course);
         return "course added to institution";
     }
 
@@ -79,19 +82,21 @@ public class CourseService {
 
     public String editCourse(String newName, String dbName){
         log.info("getting record with name: {}", dbName);
-        Course course = repo.findCourseByCourseName(dbName).orElseThrow();
+        Course course = repo.findCourseByCourseName(dbName).orElse(new Course("empty"));
 
         log.info("getting record with name: {}", newName);
         Course course1 = repo.findCourseByCourseName(newName).orElse(new Course("empty"));
 
         String course1_name = course1.getCourseName().toUpperCase();
+        String course_name = course.getCourseName().toUpperCase();
 
-        if(course1_name.equals(newName.toUpperCase())){
+        if(course1_name.equals(course_name)){
             log.info("Course name: {} , already exists ", course1_name);
             return "Name already exists";
         } else {
             log.info("changing the name: {} to the new name: {} ", dbName, newName);
             course.setCourseName(newName);
+            repo.save(course);
             return "Record name updated";
         }
 

@@ -58,6 +58,13 @@ public class InstitutionController {
         return new ResponseEntity<>(feedback, HttpStatus.OK);
     }
 
+    @GetMapping("/inst")
+    public ResponseEntity<Optional<Institution>> getInstitution(@RequestParam String instName){
+        log.info("getting institution ....");
+        return new ResponseEntity<>(service.getInst(instName), HttpStatus.OK);
+    }
+
+
     @GetMapping("/courses")
     public ResponseEntity<Set<Course>> getCoursesPerInstitution(@RequestParam String instName){
         log.info("getting courses ....");

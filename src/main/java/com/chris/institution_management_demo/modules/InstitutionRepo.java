@@ -10,7 +10,7 @@ import java.util.Set;
 @Repository
 public interface InstitutionRepo extends JpaRepository<Institution,Integer> {
 
-
+    Optional<Institution> findByInstName(String name);
     Optional<Institution> findInstitutionByInstName(String name);
     Set<Course> findByCourses(Course course);
 

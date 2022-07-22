@@ -24,9 +24,9 @@ public class StudentController {
     }
 
     @PutMapping("/assign/course")
-    public ResponseEntity<String> assignStudentCourse(@RequestParam String studentName, @RequestParam String courseName){
+    public ResponseEntity<String> assignStudentCourse(@RequestParam String studentName, @RequestParam String courseName, @RequestParam String instName){
         log.info("request to assign student a course");
-        return new ResponseEntity<>(service.assignStudent(studentName, courseName), HttpStatus.OK);
+        return new ResponseEntity<>(service.assignStudent(studentName, courseName, instName), HttpStatus.OK);
     }
 
     @GetMapping("/all")
@@ -59,10 +59,10 @@ public class StudentController {
         return new ResponseEntity<>(service.transferStudent(studentId, instName, courseName), HttpStatus.OK);
     }
 
-    @PutMapping("/edit/course")
-    public ResponseEntity<String> editStudentCourse(@RequestParam String courseName, @RequestParam String dbName){
+    @PutMapping("/edit/{studentId}/course")
+    public ResponseEntity<String> editStudentCourse(@RequestParam String courseName, @PathVariable int studentId){
         log.info("request to change student's course");
-        return new ResponseEntity<>(service.editCourse(courseName, dbName), HttpStatus.OK);
+        return new ResponseEntity<>(service.editCourse(courseName, studentId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{studentId}")
